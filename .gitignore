@@ -35,6 +35,9 @@
 *.sh
 *.txt
 
-# Ignore Some Folders
+# Ignore Personal Folders
 samples/
 .vscode/
+
+# Ignore build folder
+build/
