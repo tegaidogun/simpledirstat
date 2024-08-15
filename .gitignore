@@ -31,8 +31,9 @@
 *.out
 *.app
 
-# Linux Scripts
+# Linux Scripts and Sample Texts
 *.sh
+*.txt
 
 # Ignore Some Folders
 samples/
