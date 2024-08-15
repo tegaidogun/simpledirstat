@@ -1,2 +1,3 @@
 # simpledirstat
- A simple command-line application allowing users to view directory size information.
+
+A simple command line tool to visualize disk usage.
