@@ -1,0 +1,150 @@
+common.h:
+#ifndef COMMON_H
+#define COMMON_H
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
+struct FileInfo {
+    fs::path path;
+    uintmax_t size;
+};
+
+// Make the function inline to avoid multiple definitions
+inline std::string format_size(uintmax_t size) {
+    std::vector<std::string> sizes = {"B", "KB", "MB", "GB", "TB"};
+    int order = 0;
+    double formattedSize = size;
+    while (formattedSize >= 1024 && order < static_cast<int>(sizes.size()) - 1) {
+        order++;
+        formattedSize /= 1024;
+    }
+    return std::to_string(formattedSize) + ' ' + sizes[order];
+}
+
+#endif // COMMON_H
+
+
+
+
+scanner.h:
+#ifndef SCANNER_H
+#define SCANNER_H
+
+#include "common.h"
+
+// Function to scan a directory and return file information
+std::vector<FileInfo> scan_directory(const fs::path& directory);
+
+#endif // SCANNER_H
+
+
+
+
+visualizer.h:
+#ifndef VISUALIZER_H
+#define VISUALIZER_H
+
+#include "common.h"
+
+// Function to display the directory contents
+void display_directory(const std::vector<FileInfo>& files);
+
+#endif // VISUALIZER_H
+
+
+
+
+main.cpp:
+#include "scanner.h"
+#include "visualizer.h"
+
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        std::cerr << "Usage: " << argv[0] << " <directory_path>" << std::endl;
+        return 1;
+    }
+    fs::path directory_path = argv[1];
+    if (!fs::exists(directory_path) || !fs::is_directory(directory_path)) {
+        std::cerr << "Provided path does not exist or is not a directory." << std::endl;
+        return 1;
+    }
+
+    auto files = scan_directory(directory_path);
+    display_directory(files);
+
+    return 0;
+}
+
+
+
+
+scanner.cpp:
+#include "scanner.h"
+
+std::vector<FileInfo> scan_directory(const fs::path& directory) {
+    std::vector<FileInfo> files;
+    for (const auto& entry : fs::recursive_directory_iterator(directory)) {
+        if (fs::is_regular_file(entry)) {
+            FileInfo info{entry.path(), fs::file_size(entry)};
+            files.push_back(info);
+        }
+    }
+    return files;
+}
+
+
+
+
+utils.cpp:
+
+
+
+
+visualizer.cpp:
+#include "visualizer.h"
+
+void display_directory(const std::vector<FileInfo>& files) {
+    for (const auto& file : files) {
+        std::cout << file.path << " " << format_size(file.size) << std::endl;
+    }
+}
+
+
+
+
+test_scanner.cpp:
+
+
+
+
+Directory structure:
+.
+├── docs
+│   └── GOALS.md
+├── include
+│   ├── common.h
+│   ├── scanner.h
+│   └── visualizer.h
+├── LICENSE
+├── Makefile
+├── merged_contents.sh
+├── merged_contents.txt
+├── README.md
+├── src
+│   ├── main.cpp
+│   ├── main.o
+│   ├── scanner.cpp
+│   ├── scanner.o
+│   ├── utils.cpp
+│   ├── utils.o
+│   ├── visualizer.cpp
+│   └── visualizer.o
+└── tests
+    └── test_scanner.cpp
+
+5 directories, 18 files

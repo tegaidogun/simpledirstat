@@ -31,5 +31,9 @@
 *.out
 *.app
 
-# Ignore Visual Studio Code folder
+# Linux Scripts
+*.sh
+
+# Ignore Some Folders
+samples/
 .vscode/
