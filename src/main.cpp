@@ -1,50 +1,33 @@
+#include <iostream>
 #include <algorithm>
+#include <numeric>
 #include "scanner.h"
 #include "visualizer.h"
 
-struct CommandLineOptions {
-    fs::path directory;
-    std::string sort_order = "size";  // Default sort by size
-
-    static CommandLineOptions parse(int argc, char** argv) {
-        CommandLineOptions options;
-        if (argc < 2) {
-            throw std::runtime_error("Usage: " + std::string(argv[0]) + " <directory_path> [--sort size|type]");
-        }
-        options.directory = argv[1];
-        if (argc > 2 && std::string(argv[2]) == "--sort") {
-            if (argc > 3 && (std::string(argv[3]) == "size" || std::string(argv[3]) == "type")) {
-                options.sort_order = argv[3];
-            } else {
-                throw std::runtime_error("Invalid sort option. Use --sort size or type");
-            }
-        }
-        return options;
-    }
-};
-
 int main(int argc, char** argv) {
-    try {
-        auto options = CommandLineOptions::parse(argc, argv);
+    fs::path directory = argc > 1 ? argv[1] : fs::current_path();
+    FileScanner scanner;
 
-        if (!fs::exists(options.directory) || !fs::is_directory(options.directory)) {
-            std::cerr << "Provided path does not exist or is not a directory." << std::endl;
-            return 1;
+    if (argc == 2) {
+        scanner.scanDirectories(directory);
+        auto directorySizes = scanner.getDirectorySizes();
+        uintmax_t totalSize = std::accumulate(directorySizes.begin(), directorySizes.end(), 0ULL,
+                                              [](uintmax_t sum, const auto& pair) { return sum + pair.second; });
+        displayDirectories(directorySizes, totalSize);
+    } else if (argc >= 3) {
+        size_t n = (argc > 3) ? std::stoi(argv[3]) : std::numeric_limits<size_t>::max();
+        if (std::string(argv[2]) == "--filetype") {
+            scanner.scanFiles(directory);
+            auto fileTypeSummary = scanner.getFileTypeSummary();
+            displayFileTypeSummary(fileTypeSummary, n);
+        } else if (std::string(argv[2]) == "--filesize") {
+            scanner.scanFiles(directory);
+            auto files = scanner.getFiles();
+            if (files.size() > n) files.resize(n); // Properly using 'n'
+            displayFiles(files);
         }
-
-        auto files = scan_directory(options.directory);
-        if (options.sort_order == "size") {
-            std::sort(files.begin(), files.end(), [](const FileInfo& a, const FileInfo& b) {
-                return a.size > b.size;  // Sort by size, descending
-            });
-        } else if (options.sort_order == "type") {
-            std::sort(files.begin(), files.end(), [](const FileInfo& a, const FileInfo& b) {
-                return a.path.extension() < b.path.extension();  // Sort by file type
-            });
-        }
-        display_directory(files);
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+    } else {
+        std::cerr << "Usage: " << argv[0] << " <directory> [--filetype [n] | --filesize [n]]" << std::endl;
         return 1;
     }
     return 0;

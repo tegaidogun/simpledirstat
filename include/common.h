@@ -3,17 +3,20 @@
 
 #include <iostream>
 #include <vector>
-#include <string>
 #include <filesystem>
+#include <string>
 
 namespace fs = std::filesystem;
 
 struct FileInfo {
-    fs::path path;
+    std::string path;  // Ensure this stores the full path
     uintmax_t size;
+
+    bool operator>(const FileInfo& other) const {
+        return size > other.size;  // Max-Heap comparison
+    }
 };
 
-// Declare the utility function
 std::string format_size(uintmax_t size);
 
 #endif // COMMON_H
