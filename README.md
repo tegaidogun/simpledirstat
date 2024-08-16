@@ -1,48 +1,60 @@
-# simpledirstat
+# SimpleDirStat
 
-**simpledirstat** is a command-line utility that provides a visual representation of disk usage on Linux systems, inspired by tools like WinDirStat and K4DirStat. It allows users to quickly understand how disk space is distributed across files and directories.
+SimpleDirStat is a command-line utility designed to analyze and display directory and file statistics based on their sizes. It offers a simple yet powerful way to visualize file system usage, making it easy to identify large files and directories quickly.
 
-## Getting Started
+## NOTE
+It's only been tested to work on Linux
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+## Features
 
-### Prerequisites
-
-Make sure you have a C++ compiler and make installed on your system. This project also requires a C++17 standard compatible compiler due to its usage of the filesystem library.
-
-### Installing
-
-1. Clone the repository:
-    ``` bash
-   git clone https://github.com/tegaidogun/simpledirstat.git
-   cd simpledirstat
-   ```
-
-2. Build the project:
-   ``` bash
-   make
-   ```
-
-3. Run the application:
-   ``` bash
-   ./simpledirstat /path/to/directory
-   ```
+- **Default Display:** Shows first-level directories with their sizes relative to the entire directory's size.
+- **--filetype [n]:** Displays the largest 'n' files sorted by file size within their file types. If 'n' is not specified, it displays all file types.
+- **--filesize [n]:** Displays the largest 'n' files across all directories. If 'n' is not specified, it shows all files sorted by size.
 
 ## Usage
 
-To use **simpledirstat**, simply run the executable followed by the path to the directory you want to analyze. For example:
-./simpledirstat /home/user
+To use SimpleDirStat, navigate to your project directory and run one of the following commands depending on what information you need:
 
-## Project Goals
+```bash 
+simpledirstat [directory]
+```
+This will display the size of each first-level directory within the specified directory relative to its total size.
 
-For a detailed overview of the project goals and what we aim to achieve with **simpledirstat**, please refer to [our goals](docs/GOALS.md) in the docs directory.
+```bash
+simpledirstat [directory] --filetype [n]
+```
+This command will list the 'n' largest files sorted by file size within each file type. If 'n' is omitted, all file types are displayed.
+
+```bash 
+simpledirstat [directory] --filesize [n]
+```
+This displays the 'n' largest files across all directories. If 'n' is not provided, it lists all files sorted by size.
+
+## Installation
+
+1. Clone the repository to your local machine.
+2. Navigate to the cloned directory.
+3. Run make to build the project.
+4. Navigate to the build folder inside the project to find the executable.
+
+## Example
+
+To analyze the directory ~/Documents, you can run:
+
+```bash
+simpledirstat ~/Documents
+```
+
+To display file types in the directory ~/Documents:
+
+```bash 
+simpledirstat ~/Documents --filetype
+```
+
+## Licensing
+
+This project is licensed under the GNU General Public License v3.0.
 
 ## Contributing
 
-Contributions are welcome! For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
-
-## License
-
-This project is licensed under the GNU GPL v3 License - see the LICENSE.md file for details.
+Contributions to SimpleDirStat are welcome. Please fork the repository, make your changes, and submit a pull request.
